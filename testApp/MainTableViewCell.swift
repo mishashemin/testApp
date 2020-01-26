@@ -15,6 +15,8 @@ class MainTableViewCell: UITableViewCell {
     @IBOutlet weak var lbID: UILabel!
     @IBOutlet weak var adress: UILabel!
     @IBOutlet weak var changeLable: UILabel!
+    @IBOutlet weak var lbNameWight: NSLayoutConstraint!
+    @IBOutlet weak var lbIDWidht: NSLayoutConstraint!
     override func awakeFromNib() {
         
         super.awakeFromNib()

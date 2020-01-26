@@ -90,8 +90,9 @@ class SearchViewController: UIViewController, ViewModelProtocol{
             cell.lbID.text = String(describing: (items![index].id)!)
             let name = items![index].first_name! + " " + items![index].last_name!
             cell.lbName.text = name
-            cell.changeLable.font = cell.changeLable.font.withSize(16.0)
             cell.changeLable.text = "Имя:"
+            cell.lbNameWight.constant = 45
+            cell.lbIDWidht.constant = 45
             
             var link = ""
             if items![index].photo_200 != nil{ link = items![index].photo_200! }
@@ -105,8 +106,9 @@ class SearchViewController: UIViewController, ViewModelProtocol{
             
             cell.lbID.text = String(describing: (items![index].id)!)
             cell.lbName.text = items![index].name!
-            cell.changeLable.font = cell.changeLable.font.withSize(6.0)
             cell.changeLable.text = "Название:"
+            cell.lbNameWight.constant = 90
+            cell.lbIDWidht.constant = 90
             
             var link = ""
             if items![indexPath.row].photo_200 != nil{ link = items![indexPath.row].photo_200! }

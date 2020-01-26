@@ -73,8 +73,12 @@ class RequestHandler :ReqestModelProtocol{
     
     private func searchUser(_ str:String, _ receiver: ViewModelProtocol)->Bool{
         
-        let modStr = str.replacingOccurrences(of: " ", with: "%20")
-        let urlString:String = apiVK + modAlone + "?q=\(modStr)&fields=photo,photo_100,photo_200,screen_name&count=\(count)&access_token=\(token)&v=5.103"
+        let encodedText = str.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
+        var urlString = ""
+        if let encodedText = encodedText{
+            urlString = apiVK + modAlone + "?q=\(encodedText)&fields=photo,photo_100,photo_200,screen_name&count=\(count)&access_token=\(token)&v=5.103"
+        }
+        else { return false }
         guard let url = URL(string: urlString) else { return false }
         requestSubnission(url,receiver)
         return true
@@ -82,8 +86,13 @@ class RequestHandler :ReqestModelProtocol{
     
     private func searchGroup(_ str:String, _ receiver: ViewModelProtocol)->Bool{
         
-        let modStr = str.replacingOccurrences(of: " ", with: "%20")
-        let urlString:String = apiVK + modGroup + "?q=\(modStr)&count=\(count)&access_token=\(token)&v=5.103"
+        if str == "" { return false }
+        let encodedText = str.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
+        var urlString = ""
+        if let encodedText = encodedText{
+            urlString = apiVK + modGroup + "?q=\(encodedText)&count=\(count)&access_token=\(token)&v=5.103"
+        }
+        else{ return false }
         guard let url = URL(string: urlString) else { return false }
         requestSubnission(url,receiver)
         return true
