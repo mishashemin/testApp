@@ -10,11 +10,11 @@ import UIKit
 
 
 
-class SearchViewController: UIViewController, ViewModelProtocol{
+class SearchViewController: UIViewController{
     var res: Res? = nil
     var searchType : ID = .user
     let idCall = "mainCall"
-    var handler: ReqestModelProtocol? = nil
+    var handler: RequstModelProtocol? = nil
     @IBOutlet weak var searchTF: UITextField!
     @IBOutlet weak var searchBut: UIButton!
     @IBOutlet weak var resultTable: UITableView!
@@ -59,6 +59,66 @@ class SearchViewController: UIViewController, ViewModelProtocol{
         countLable.text = "\(Int(countSlider.value))"
     }
     
+    func cellCraft( _ cell : MainTableViewCell,_ indexPath: IndexPath)->MainTableViewCell{
+        let items = res?.response?.items
+        let index = indexPath.row
+        switch searchType {
+        case .user:
+            
+            cell.lbID.text = String(describing: (items![index].id)!)
+            let name = items![index].firstName! + " " + items![index].lastName!
+            cell.lbName.text = name
+            cell.changeLable.text = "Имя:"
+            cell.lbNameWight.constant = 45
+            cell.lbIDWidht.constant = 45
+            
+            var link = ""
+            if items![index].photo200 != nil{ link = items![index].photo200! }
+            else if items![index].photo100 != nil{ link = items![index].photo100! }
+            else if items![index].photo != nil{ link = items![index].photo! }
+            
+            cell.img.downloadedFrom(link: link)
+            cell.adress.text = "https://vk.com/" + items![index].screenName!
+            
+        case .group:
+            
+            cell.lbID.text = String(describing: (items![index].id)!)
+            cell.lbName.text = items![index].name!
+            cell.changeLable.text = "Название:"
+            cell.lbNameWight.constant = 90
+            cell.lbIDWidht.constant = 90
+            
+            var link = ""
+            if items![indexPath.row].photo200 != nil{ link = items![indexPath.row].photo200! }
+            else if items![indexPath.row].photo100 != nil{ link = items![indexPath.row].photo100! }
+            else if items![indexPath.row].photo != nil{ link = items![indexPath.row].photo! }
+            
+            cell.img.downloadedFrom(link: link)
+            cell.adress.text = "https://vk.com/" + items![indexPath.row].screenName!
+        }
+        return cell
+    }
+}
+
+extension SearchViewController: UITabBarDelegate, UITableViewDataSource{
+    
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int{
+        if let count = res?.response?.items?.count{
+            return count
+        }
+        else{
+            return 0
+        }
+    }
+    
+    @available(iOS 2.0, *)
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell{
+        let cell = resultTable.dequeueReusableCell(withIdentifier: idCall) as! MainTableViewCell
+        return cellCraft(cell,indexPath)
+    }
+}
+
+extension SearchViewController:ViewModelProtocol{
     
     func receive(data: Res) {
         loadDataIndicator.stopAnimating()
@@ -81,63 +141,4 @@ class SearchViewController: UIViewController, ViewModelProtocol{
         errorLable.text = "Ошибка в запросе!"
     }
     
-    func cellCraft( _ cell : MainTableViewCell,_ indexPath: IndexPath)->MainTableViewCell{
-        let items = res?.response?.items
-        let index = indexPath.row
-        switch searchType {
-        case .user:
-            
-            cell.lbID.text = String(describing: (items![index].id)!)
-            let name = items![index].first_name! + " " + items![index].last_name!
-            cell.lbName.text = name
-            cell.changeLable.text = "Имя:"
-            cell.lbNameWight.constant = 45
-            cell.lbIDWidht.constant = 45
-            
-            var link = ""
-            if items![index].photo_200 != nil{ link = items![index].photo_200! }
-            else if items![index].photo_100 != nil{ link = items![index].photo_100! }
-            else if items![index].photo != nil{ link = items![index].photo! }
-            
-            cell.img.downloadedFrom(link: link)
-            cell.adress.text = "https://vk.com/" + items![index].screen_name!
-            
-        case .group:
-            
-            cell.lbID.text = String(describing: (items![index].id)!)
-            cell.lbName.text = items![index].name!
-            cell.changeLable.text = "Название:"
-            cell.lbNameWight.constant = 90
-            cell.lbIDWidht.constant = 90
-            
-            var link = ""
-            if items![indexPath.row].photo_200 != nil{ link = items![indexPath.row].photo_200! }
-            else if items![indexPath.row].photo_100 != nil{ link = items![indexPath.row].photo_100! }
-            else if items![indexPath.row].photo != nil{ link = items![indexPath.row].photo! }
-            
-            cell.img.downloadedFrom(link: link)
-            cell.adress.text = "https://vk.com/" + items![indexPath.row].screen_name!
-        default: break
-            
-        }
-        return cell
-    }
-}
-
-extension SearchViewController: UITabBarDelegate, UITableViewDataSource{
-    
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int{
-        if let count = res?.response?.items?.count{
-            return count
-        }
-        else{
-            return 0
-        }
-    }
-    
-    @available(iOS 2.0, *)
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell{
-        let cell = resultTable.dequeueReusableCell(withIdentifier: idCall) as! MainTableViewCell
-        return cellCraft(cell,indexPath)
-    }
 }

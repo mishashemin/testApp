@@ -12,7 +12,7 @@ protocol ViewModelProtocol {
     func receive(data : Res)
 }
 
-protocol ReqestModelProtocol {
+protocol RequstModelProtocol {
     var count:Int {get set}
     func search(str:String, id: ID, receiver: ViewModelProtocol) -> Bool
     
@@ -27,23 +27,26 @@ struct Response:Codable {
     let items:[Items]?
     
 }
-struct Items:Codable{
+struct Items: Codable{
     let id:Int?
     let name:String?
-    let first_name:String?
-    let last_name:String?
-    let screen_name:String?
+    let firstName:String?
+    let lastName:String?
+    let screenName:String?
     let photo:String?
-    let photo_100:String?
-    let photo_200:String?
+    let photo100:String?
+    let photo200:String?
     
-//   enum CodingKyse:String,CodingKey {
-//       case id
-//       case firstName = "first_name"
-//       case lastName = "last_name"
-//       case screenName = "screen_name"
-//       case photo
-//    }
+    enum CodingKeys:String,CodingKey {
+        case id
+        case name
+        case firstName = "first_name"
+        case lastName = "last_name"
+        case screenName = "screen_name"
+        case photo
+        case photo100 = "photo_100"
+        case photo200 = "photo_200"
+    }
 }
 
 
@@ -53,23 +56,13 @@ enum ID {
 }
 
 
-class RequestHandler :ReqestModelProtocol{
-    var count : Int = 0
+class RequestHandler {
     let modAlone: String = "/users.search"
     let modGroup: String = "/groups.search"
     let apiVK:String = "https://api.vk.com/method"
     let token:String = "99d54d469f2eebd8372f492d286ec01916da715d44f0e712637b0108e8e6011c62ddfa7310ad42ec9f019"
     
-    func search(str : String,id: ID, receiver: ViewModelProtocol) -> Bool{
-        switch id {
-        case .user:
-            return searchUser(str, receiver)
-        case .group:
-            return searchGroup(str, receiver)
-        default:
-            return false
-        }
-    }
+    var count: Int = 0
     
     private func searchUser(_ str:String, _ receiver: ViewModelProtocol)->Bool{
         
@@ -128,6 +121,19 @@ class RequestHandler :ReqestModelProtocol{
             }.resume()
     }
 }
+
+extension RequestHandler: RequstModelProtocol{
+    
+    func search(str : String,id: ID, receiver: ViewModelProtocol) -> Bool{
+        switch id {
+        case .user:
+            return searchUser(str, receiver)
+        case .group:
+            return searchGroup(str, receiver)
+        }
+    }
+}
+    
 extension UIImageView{
     
     func downloadedFrom(link:String) {
