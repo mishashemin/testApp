@@ -14,7 +14,7 @@ protocol ViewModelProtocol {
 
 protocol RequstModelProtocol {
     var count:Int {get set}
-    func search(str:String, id: ID, receiver: ViewModelProtocol) -> Bool
+    func search(str:String, id: Type, receiver: ViewModelProtocol) -> Bool
     
 }
 
@@ -60,7 +60,7 @@ extension Data{
     }
 }
 
-enum ID {
+enum Type {
     case user
     case group
 }
@@ -134,7 +134,7 @@ class RequestHandler {
 
 extension RequestHandler: RequstModelProtocol{
     
-    func search(str : String,id: ID, receiver: ViewModelProtocol) -> Bool{
+    func search(str : String,id: Type, receiver: ViewModelProtocol) -> Bool{
         switch id {
         case .user:
             return searchUser(str, receiver)

@@ -26,4 +26,26 @@ class MainTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
     
+    func craftParm(type: Type, name: String, id: Int, imgLink: String, screenName: String)
+    {
+        switch type {
+        case .user:
+            lbID.text = String(id)
+            lbName.text = name
+            changeLable.text = "Имя:"
+            lbNameWight.constant = 45
+            lbIDWidht.constant = 45
+            img.downloadedFrom(link: imgLink)
+            adress.text = "https://vk.com/" + screenName
+            
+        case .group:
+            lbID.text = String(id)
+            lbName.text = name
+            changeLable.text = "Название:"
+            lbNameWight.constant = 90
+            lbIDWidht.constant = 90
+            img.downloadedFrom(link: imgLink)
+            adress.text = "https://vk.com/" + screenName
+        }
+    }
 }
