@@ -11,7 +11,7 @@ import UIKit
 
 
 class SearchViewController: UIViewController{
-    var res: Res? = nil
+    var data: Data? = nil
     var searchType : ID = .user
     let idCall = "mainCall"
     var handler: RequstModelProtocol? = nil
@@ -60,7 +60,7 @@ class SearchViewController: UIViewController{
     }
     
     func cellCraft( _ cell : MainTableViewCell,_ indexPath: IndexPath)->MainTableViewCell{
-        let items = res?.response?.items
+        let items = data?.items
         let index = indexPath.row
         switch searchType {
         case .user:
@@ -103,7 +103,7 @@ class SearchViewController: UIViewController{
 extension SearchViewController: UITabBarDelegate, UITableViewDataSource{
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int{
-        if let count = res?.response?.items?.count{
+        if let count = data?.items?.count{
             return count
         }
         else{
@@ -120,10 +120,10 @@ extension SearchViewController: UITabBarDelegate, UITableViewDataSource{
 
 extension SearchViewController:ViewModelProtocol{
     
-    func receive(data: Res) {
+    func receive(data: Data) {
         loadDataIndicator.stopAnimating()
-        res = data
-        if (res?.response?.items?.count)! > 0{
+        self.data = data
+        if (data.items?.count)! > 0{
             resultTable.reloadData()
             errorLable.isHidden = true
             resultTable.isHidden = false

@@ -9,7 +9,7 @@ import UIKit
 
 protocol ViewModelProtocol {
     func errorHandler()
-    func receive(data : Res)
+    func receive(data : Data)
 }
 
 protocol RequstModelProtocol {
@@ -18,16 +18,17 @@ protocol RequstModelProtocol {
     
 }
 
-struct Res: Codable{
-    let response: Response?
+struct Data:Codable {
+    let items:[Item]?
+    
+    enum TopCodingKeys: String, CodingKey{
+        case items
+        case count
+        case response
+    }
 }
 
-struct Response:Codable {
-    let count:Int?
-    let items:[Items]?
-    
-}
-struct Items: Codable{
+struct Item: Codable{
     let id:Int?
     let name:String?
     let firstName:String?
@@ -49,6 +50,15 @@ struct Items: Codable{
     }
 }
 
+extension Data{
+    init(from decoder:Decoder) throws{
+        let container = try decoder.container(keyedBy: TopCodingKeys.self)
+        
+        let responseContainer = try container.nestedContainer(keyedBy: TopCodingKeys.self, forKey: .response)
+        let items = try responseContainer.decode([Item].self, forKey: .items)
+        self.init(items: items)
+    }
+}
 
 enum ID {
     case user
@@ -99,9 +109,9 @@ class RequestHandler {
                 if data != nil {
                     do{
                         let decoder = JSONDecoder()
-                        let res = try decoder.decode(Res.self, from: data!)
+                        let decodeData = try decoder.decode(Data.self, from: data!)
                         DispatchQueue.main.async {
-                            receiver.receive(data: res)
+                            receiver.receive(data: decodeData)
                         }
                         return
                     }
